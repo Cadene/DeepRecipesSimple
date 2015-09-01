@@ -125,17 +125,19 @@ if cuda then criterion:cuda() end
 confusion   = optim.ConfusionMatrix(101)
 trainLogger = optim.Logger(paths.concat('train.log'))
 testLogger  = optim.Logger(paths.concat('test.log'))
+lossLogger  = optim.Logger(paths.concat('loss.log'))
 
 config = {
-    learningRate = 1e-1,
+    learningRate = 1e-2,
     weightDecay = 1e-3,
     momentum = 0.6,
     learningRateDecay = 1e-4
 }
 
 function train()
-    print('# ----------------------')
-    print('# ... training model ...')
+    print('# ---------------------- #')
+    print('# ... training model ... #')
+    print('# ---------------------- #')
     local timer = torch.Timer()
     t_outputs, t_targets = {}, {}
     model:training()
@@ -169,12 +171,13 @@ function train()
             df_di   = model:backward(inputs, df_do)
             table.insert(t_outputs, outputs:clone())
             table.insert(t_targets, targets:clone())
-            print('loss : '..loss)
-            print('learning rate : '..(config.learningRate / (1 + batch_id*config.learningRateDecay))) 
+            print('> loss : '..loss)
+            print('> learning rate : '..(config.learningRate / (1 + batch_id*config.learningRateDecay))) 
+            lossLogger:add{['loss'] = loss}
             return loss, gradParameters
         end
         optim.sgd(feval, parameters, config)
-        print('seconds : '..timer:time().real)
+        print('> seconds : '..timer:time().real)
 	batch_id = batch_id + 1
     end
     -- print(confusion)
@@ -183,16 +186,20 @@ function train()
         confusion:batchAdd(t_outputs[i], t_targets[i])
     end
     confusion:updateValids()
-    print('Perf train : '..(confusion.totalValid * 100))
+    print('> perf train : '..(confusion.totalValid * 100))
     trainLogger:add{['% train perf'] = confusion.totalValid * 100}
     trainLogger:style{['% train perf'] = '-'}
     trainLogger:plot()
+    lossLogger:style{['loss'] = '-'}
+    lossLogger:plot()
+    print('# ... saving model')
     torch.save('model.t7', model)
 end
 
 function test()
-    print('# ---------------------')
-    print('# ... testing model ...')
+    print('# --------------------- #')
+    print('# ... testing model ... #')
+    print('# --------------------- #')
     local timer = torch.Timer()
     t_outputs, t_targets = {}, {}
     model:evaluate()
@@ -220,7 +227,7 @@ function test()
         outputs = model:forward(inputs)
         table.insert(t_outputs, outputs:clone())
         table.insert(t_targets, targets:clone())
-        print('seconds : '..timer:time().real)
+        print('> seconds : '..timer:time().real)
         batch_id = batch_id + 1
     end
     -- print(confusion)
@@ -229,15 +236,16 @@ function test()
         confusion:batchAdd(t_outputs[i], t_targets[i])
     end
     confusion:updateValids()
-    print('perf test : '..(confusion.totalValid * 100))
+    print('> perf test : '..(confusion.totalValid * 100))
     testLogger:add{['% test perf'] = confusion.totalValid * 100}
     testLogger:style{['% test perf'] = '-'}
     testLogger:plot()
 end
 
 for i = 1, nb_epoch do
-    print('\n# # # # # # # # # # # # #')
-    print('# ... Processing epoch_'..i)
+    print('\n# # # # # # # # # # # # # # # #')
+    print('# ... Processing epoch_'..i..' ...')
+    print('# # # # # # # # # # # # # # # #')
     train()
     test()
 end
