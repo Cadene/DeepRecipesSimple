@@ -9,6 +9,7 @@ torch.setnumthreads(4)
 
 cuda = false
 batch = 60
+nb_epoch = 30
 path2dir = '/Users/remicadene/data/recipe_101_tiny/'
 
 if cuda then
@@ -130,10 +131,13 @@ config = {
 }
 
 function train()
+    print('\ntrain')
     model:training()
     confusion:zero()
     shuffle = torch.randperm(trainset.size)
+    batch_id = 1
     for i = 1, trainset.size, batch do
+        print('batch_id', batch_id)
         if i + batch > trainset.size then
             b_size = trainset.size - i
         else
@@ -156,12 +160,14 @@ function train()
             gradParameters:zero()
             outputs = model:forward(inputs)
             loss    = criterion:forward(outputs, targets)
+            print('loss', loss)
             df_do   = criterion:backward(outputs, targets)
             df_di   = model:backward(inputs, df_do)
             confusion:batchAdd(outputs, targets)
             return loss, gradParameters
         end
         optim.sgd(feval, parameters, config)
+        batch_id = batch_id + 1
     end
     -- print(confusion)
     confusion:updateValids()
@@ -172,6 +178,7 @@ function train()
 end
 
 function test()
+    print('\ntest')
     model:evaluate()
     confusion:zero()
     for i = 1, testset.size, batch do
@@ -203,5 +210,7 @@ function test()
     testLogger:plot()
 end
 
---train()
-test()
+for i = 1, nb_epoch do
+    train()
+    test()
+end
