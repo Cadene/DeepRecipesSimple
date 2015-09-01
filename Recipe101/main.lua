@@ -3,21 +3,23 @@ require 'optim'
 require 'nn'
 require 'image'
 
-print("# ... lunching using pid = "..posix.getpid("pid"))
-torch.manualSeed(1337)
-torch.setnumthreads(4)
-
 cuda = true
 batch = 60
-nb_epoch = 30
+nb_epoch = 60
+seed = 1337
 path2dir = '/Users/remicadene/data/recipe_101_tiny/'
 path2dir = '/home/cadene/data/recipe_101_tiny/'
+
+print("# ... lunching using pid = "..posix.getpid("pid"))
+torch.manualSeed(seed)
+torch.setnumthreads(4)
+
 
 if cuda then
     print('# ... switching to CUDA')
     require 'cutorch'
     cutorch.setDevice(1)
-    cutorch.manualSeed(1337, 0)
+    cutorch.manualSeed(seed)
     require 'cunn'
     require 'cudnn'
 end
@@ -127,19 +129,20 @@ testLogger  = optim.Logger(paths.concat('test.log'))
 config = {
     learningRate = 1e-1,
     weightDecay = 1e-3,
-    momentum = 0.9,
+    momentum = 0.6,
     learningRateDecay = 1e-4
 }
 
 function train()
-    print('\n# ... training model')
+    print('# ----------------------')
+    print('# ... training model ...')
     local timer = torch.Timer()
+    t_outputs, t_targets = {}, {}
     model:training()
-    confusion:zero()
     shuffle = torch.randperm(trainset.size)
     batch_id = 1
     for i = 1, trainset.size, batch do
-        print('# ... processing batch_id '..batch_id)
+        print('# ... processing batch_'..batch_id)
         if i + batch > trainset.size then
             b_size = trainset.size - i
         else
@@ -162,18 +165,23 @@ function train()
             gradParameters:zero()
             outputs = model:forward(inputs)
             loss    = criterion:forward(outputs, targets)
-            print('loss', loss)
             df_do   = criterion:backward(outputs, targets)
             df_di   = model:backward(inputs, df_do)
-            confusion:batchAdd(outputs, targets)
+            table.insert(t_outputs, outputs:clone())
+            table.insert(t_targets, targets:clone())
+            print('loss : '..loss)
+            print('learning rate : '..(config.learningRate / (1 + batch_id*config.learningRateDecay))) 
             return loss, gradParameters
         end
         optim.sgd(feval, parameters, config)
-        local s = timer:time().real
-        print('... done in '..string.format("%.2d:%2d:%2d", s/(60*60), s/60%60, s%60))
+        print('seconds : '..timer:time().real)
 	batch_id = batch_id + 1
     end
     -- print(confusion)
+    confusion:zero()
+    for i = 1, #t_outputs do
+        confusion:batchAdd(t_outputs[i], t_targets[i])
+    end
     confusion:updateValids()
     print('Perf train : '..(confusion.totalValid * 100))
     trainLogger:add{['% train perf'] = confusion.totalValid * 100}
@@ -183,13 +191,14 @@ function train()
 end
 
 function test()
-    print('\n# ... Testing model')
+    print('# ---------------------')
+    print('# ... testing model ...')
     local timer = torch.Timer()
+    t_outputs, t_targets = {}, {}
     model:evaluate()
-    confusion:zero()
     local batch_id = 1
     for i = 1, testset.size, batch do
-        print('# ... Processing batch_id '..batch_id)
+        print('# ... processing batch_'..batch_id)
 	if i + batch > testset.size then
             b_size = testset.size - i
         else
@@ -209,21 +218,26 @@ function test()
             targets = targets:cuda()
         end
         outputs = model:forward(inputs)
-        confusion:batchAdd(outputs, targets)
-        local s = timer:time().real
-        print('... done in '..string.format("%2d:%2d", s/60%60, s%60))
+        table.insert(t_outputs, outputs:clone())
+        table.insert(t_targets, targets:clone())
+        print('seconds : '..timer:time().real)
         batch_id = batch_id + 1
     end
     -- print(confusion)
+    confusion:zero()
+    for i = 1, #t_outputs do
+        confusion:batchAdd(t_outputs[i], t_targets[i])
+    end
     confusion:updateValids()
-    print('Perf test : '..(confusion.totalValid * 100))
+    print('perf test : '..(confusion.totalValid * 100))
     testLogger:add{['% test perf'] = confusion.totalValid * 100}
     testLogger:style{['% test perf'] = '-'}
     testLogger:plot()
 end
 
 for i = 1, nb_epoch do
-    print('\n# ... Processing epoch '..i)
+    print('\n# # # # # # # # # # # # #')
+    print('# ... Processing epoch_'..i)
     train()
     test()
 end
