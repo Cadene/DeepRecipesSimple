@@ -7,13 +7,14 @@ cuda = true
 batch = 60
 nb_epoch = 60
 seed = 1337
-path2dir = '/Users/remicadene/data/recipe_101_tiny/'
+-- path2dir = '/Users/remicadene/data/recipe_101_tiny/'
 path2dir = '/home/cadene/data/recipe_101_tiny/'
+save_model = false
+debug = true
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
 torch.setnumthreads(4)
-
 
 if cuda then
     print('# ... switching to CUDA')
@@ -22,6 +23,12 @@ if cuda then
     cutorch.manualSeed(seed)
     require 'cunn'
     require 'cudnn'
+end
+
+function debug(thing)
+    if debug then
+        print(tostring(thing), thing)
+    end
 end
 
 function load_recipe101(path2dir, pc_train)
@@ -173,6 +180,8 @@ function train()
             table.insert(t_targets, targets:clone())
             print('> loss : '..loss)
             print('> learning rate : '..(config.learningRate / (1 + batch_id*config.learningRateDecay))) 
+            debug(config.learningRate)
+            debug(config.learningRateDecay)
             lossLogger:add{['loss'] = loss}
             return loss, gradParameters
         end
@@ -184,6 +193,8 @@ function train()
     confusion:zero()
     for i = 1, #t_outputs do
         confusion:batchAdd(t_outputs[i], t_targets[i])
+        debug(t_outputs[i])
+        debug(t_targets[i])
     end
     confusion:updateValids()
     print('> perf train : '..(confusion.totalValid * 100))
@@ -192,8 +203,10 @@ function train()
     trainLogger:plot()
     lossLogger:style{['loss'] = '-'}
     lossLogger:plot()
-    print('# ... saving model')
-    torch.save('model.t7', model)
+    if save_model then
+        print('# ... saving model')
+        torch.save('model.t7', model)
+    end
 end
 
 function test()
@@ -234,6 +247,8 @@ function test()
     confusion:zero()
     for i = 1, #t_outputs do
         confusion:batchAdd(t_outputs[i], t_targets[i])
+        debug(t_outputs[i])
+        debug(t_targets[i])
     end
     confusion:updateValids()
     print('> perf test : '..(confusion.totalValid * 100))
@@ -244,7 +259,7 @@ end
 
 for i = 1, nb_epoch do
     print('\n# # # # # # # # # # # # # # # #')
-    print('# ... Processing epoch_'..i..' ...')
+    print('   ... Processing epoch_'..i..' ...')
     print('# # # # # # # # # # # # # # # #')
     train()
     test()
