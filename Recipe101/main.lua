@@ -8,22 +8,24 @@ batch = 60
 nb_epoch = 60
 seed = 1337
 -- path2dir = '/Users/remicadene/data/recipe_101_tiny/'
-path2dir = '/home/cadene/data/recipe_101_tiny/'
+-- path2dir = '/home/cadene/data/recipe_101_tiny/'
+path2dir = '/home/cadene/data/recipe_101_clean/'
 save_model = false
 pretrain_model = true
-debug = false
+debug_mode = false
 path2save = 'rslt/'
 
 config = {
     learningRate = 1e-1,--1e-5,
     weightDecay = 1e-3,
     momentum = 0.6,
-    learningRateDecay = 1e-2
+    learningRateDecay = 0
 }
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
 torch.setnumthreads(4)
+torch.setdefaulttensortype('torch.FloatTensor')
 
 if cuda then
     print('# ... switching to CUDA')
@@ -36,7 +38,7 @@ end
 
 function debug(...)
     local arg = {...}
-    if debug then
+    if debug_mode then
         print('DEBUG', ...)
     end
 end
