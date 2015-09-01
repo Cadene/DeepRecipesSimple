@@ -10,7 +10,16 @@ seed = 1337
 -- path2dir = '/Users/remicadene/data/recipe_101_tiny/'
 path2dir = '/home/cadene/data/recipe_101_tiny/'
 save_model = false
-debug = true
+pretrain_model = true
+debug = false
+path2save = 'rslt/'
+
+config = {
+    learningRate = 1e-1,--1e-5,
+    weightDecay = 1e-3,
+    momentum = 0.6,
+    learningRateDecay = 1e-2
+}
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
@@ -124,6 +133,32 @@ model:add(nn.Dropout(0.5))
 model:add(SpatialConvolution(4096, nb_class, 1, 1, 1, 1))
 model:add(nn.View(nb_class))
 model:add(nn.LogSoftMax())
+
+if pretrain_model then
+    local m = model.modules
+    local ParamBank = require 'ParamBank'
+    local offset = 0
+    ParamBank:init("net_weight_1")
+    ParamBank:read(        0, {96,3,7,7},      m[offset+1].weight)
+    ParamBank:read(    14112, {96},            m[offset+1].bias)
+    ParamBank:read(    14208, {256,96,7,7},    m[offset+4].weight)
+    ParamBank:read(  1218432, {256},           m[offset+4].bias)
+    ParamBank:read(  1218688, {512,256,3,3},   m[offset+7].weight)
+    ParamBank:read(  2398336, {512},           m[offset+7].bias)
+    ParamBank:read(  2398848, {512,512,3,3},   m[offset+9].weight)
+    ParamBank:read(  4758144, {512},           m[offset+9].bias)
+    ParamBank:read(  4758656, {1024,512,3,3},  m[offset+11].weight)
+    ParamBank:read(  9477248, {1024},          m[offset+11].bias)
+    ParamBank:read(  9478272, {1024,1024,3,3}, m[offset+13].weight)
+    ParamBank:read( 18915456, {1024},          m[offset+13].bias)
+    -- ParamBank:read( 18916480, {4096,1024,5,5}, m[offset+16].weight)
+    -- ParamBank:read(123774080, {4096},          m[offset+16].bias)
+    -- ParamBank:read(123778176, {4096,4096,1,1}, m[offset+18].weight)
+    -- ParamBank:read(140555392, {4096},          m[offset+18].bias)
+    -- ParamBank:read(140559488, {1000,4096,1,1}, m[offset+20].weight)
+    -- ParamBank:read(144655488, {1000},          m[offset+20].bias)
+end
+
 if cuda then model:cuda() end
 print('# ... reshaping parameters and gradParameters')
 parameters, gradParameters = model:getParameters()
@@ -132,16 +167,9 @@ criterion = nn.ClassNLLCriterion()
 if cuda then criterion:cuda() end
 
 confusion   = optim.ConfusionMatrix(nb_class)
-trainLogger = optim.Logger(paths.concat('train.log'))
-testLogger  = optim.Logger(paths.concat('test.log'))
-lossLogger  = optim.Logger(paths.concat('loss.log'))
-
-config = {
-    learningRate = 1e-1,--1e-5,
-    weightDecay = 1e-3,
-    momentum = 0.6,
-    learningRateDecay = 1e-2
-}
+trainLogger = optim.Logger(paths.concat(path2save, 'train.log'))
+testLogger  = optim.Logger(paths.concat(path2save, 'test.log'))
+lossLogger  = optim.Logger(paths.concat(path2save, 'loss.log'))
 
 function train()
     print('# ---------------------- #')
@@ -194,8 +222,6 @@ function train()
     -- print(confusion)
     confusion:zero()
     for i = 1, #t_outputs do
-	-- debug('t_outputs', t_outputs[i])
-	-- debug('t_targets', t_targets[i])
         confusion:batchAdd(t_outputs[i], t_targets[i])
     end
     confusion:updateValids()
@@ -207,7 +233,7 @@ function train()
     lossLogger:plot()
     if save_model then
         print('# ... saving model')
-        torch.save('model.t7', model)
+        torch.save(paths.concat(path2save, 'model.t7'), model)
     end
 end
 
