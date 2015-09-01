@@ -15,13 +15,6 @@ pretrain_model = true
 debug_mode = false
 path2save = 'rslt/'
 
-config = {
-    learningRate = 1e-1,--1e-5,
-    weightDecay = 1e-3,
-    momentum = 0.6,
-    learningRateDecay = 0
-}
-
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
 torch.setnumthreads(4)
@@ -109,35 +102,41 @@ else
 end
 
 print('# ... loading overfeat')
-model = nn.Sequential()
-model:add(SpatialConvolution(3, 96, 7, 7, 2, 2))
-model:add(nn.ReLU(true))
-model:add(SpatialMaxPooling(3, 3, 3, 3))
-model:add(SpatialConvolution(96, 256, 7, 7, 1, 1))
-model:add(nn.ReLU(true))
-model:add(SpatialMaxPooling(2, 2, 2, 2))
-model:add(SpatialConvolution(256, 512, 3, 3, 1, 1, 1, 1))
-model:add(nn.ReLU(true))
-model:add(SpatialConvolution(512, 512, 3, 3, 1, 1, 1, 1))
-model:add(nn.ReLU(true))
-model:add(SpatialConvolution(512, 1024, 3, 3, 1, 1, 1, 1))
-model:add(nn.ReLU(true))
-model:add(SpatialConvolution(1024, 1024, 3, 3, 1, 1, 1, 1))
-model:add(nn.ReLU(true))
+-- conv
+conv = nn.Sequential()
+conv:add(SpatialConvolution(3, 96, 7, 7, 2, 2))
+conv:add(nn.ReLU(true))
+conv:add(SpatialMaxPooling(3, 3, 3, 3))
+conv:add(SpatialConvolution(96, 256, 7, 7, 1, 1))
+conv:add(nn.ReLU(true))
+conv:add(SpatialMaxPooling(2, 2, 2, 2))
+conv:add(SpatialConvolution(256, 512, 3, 3, 1, 1, 1, 1))
+conv:add(nn.ReLU(true))
+conv:add(SpatialConvolution(512, 512, 3, 3, 1, 1, 1, 1))
+conv:add(nn.ReLU(true))
+conv:add(SpatialConvolution(512, 1024, 3, 3, 1, 1, 1, 1))
+conv:add(nn.ReLU(true))
+conv:add(SpatialConvolution(1024, 1024, 3, 3, 1, 1, 1, 1))
+conv:add(nn.ReLU(true))
 -- classifier
-model:add(SpatialMaxPooling(3, 3, 3, 3))
-model:add(SpatialConvolution(1024, 4096, 5, 5, 1, 1))
-model:add(nn.ReLU(true))
-model:add(nn.Dropout(0.5))
-model:add(SpatialConvolution(4096, 4096, 1, 1, 1, 1))
-model:add(nn.ReLU(true))
-model:add(nn.Dropout(0.5))
-model:add(SpatialConvolution(4096, nb_class, 1, 1, 1, 1))
-model:add(nn.View(nb_class))
-model:add(nn.LogSoftMax())
+classif = nn.Sequential()
+classif:add(SpatialMaxPooling(3, 3, 3, 3))
+classif:add(SpatialConvolution(1024, 4096, 5, 5, 1, 1))
+classif:add(nn.ReLU(true))
+classif:add(nn.Dropout(0.5))
+classif:add(SpatialConvolution(4096, 4096, 1, 1, 1, 1))
+classif:add(nn.ReLU(true))
+classif:add(nn.Dropout(0.5))
+classif:add(SpatialConvolution(4096, nb_class, 1, 1, 1, 1))
+classif:add(nn.View(nb_class))
+classif:add(nn.LogSoftMax())
+-- model
+model = nn.Sequential()
+model:add(conv)
+model:add(classif)
 
 if pretrain_model then
-    local m = model.modules
+    local m = model:get(1).modules
     local ParamBank = require 'ParamBank'
     local offset = 0
     ParamBank:init("net_weight_1")
@@ -172,6 +171,28 @@ confusion   = optim.ConfusionMatrix(nb_class)
 trainLogger = optim.Logger(paths.concat(path2save, 'train.log'))
 testLogger  = optim.Logger(paths.concat(path2save, 'test.log'))
 lossLogger  = optim.Logger(paths.concat(path2save, 'loss.log'))
+
+-- optimizer sgd
+config = {
+    learningRate = 1e-1,--1e-5,
+    weightDecay = 1e-3,
+    momentum = 0.6,
+    weightDecay = 0,
+    learningRateDecay = 0
+}
+print('# ... making learningRates for convolution layers')
+lr_conv = config.learningRate/10
+lrs = torch.Tensor(parameters:size(1))
+i = 0
+lrs:apply(function()
+    i = i + 1
+    if i <= 18916480 then
+        return lr_conv
+    else
+        return config.learningRate
+    end
+end)
+config.learningRates = lrs
 
 function train()
     print('# ---------------------- #')
