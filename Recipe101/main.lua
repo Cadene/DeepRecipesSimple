@@ -10,7 +10,7 @@ seed = 1337
 -- path2dir = '/Users/remicadene/data/recipe_101_tiny/'
 path2dir = '/home/cadene/data/recipe_101_tiny/'
 save_model = false
-debug = false
+debug = true
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
@@ -137,10 +137,10 @@ testLogger  = optim.Logger(paths.concat('test.log'))
 lossLogger  = optim.Logger(paths.concat('loss.log'))
 
 config = {
-    learningRate = 1e-2,
+    learningRate = 1e-1,--1e-5,
     weightDecay = 1e-3,
     momentum = 0.6,
-    learningRateDecay = 1e-4
+    learningRateDecay = 1e-2
 }
 
 function train()
@@ -194,6 +194,8 @@ function train()
     -- print(confusion)
     confusion:zero()
     for i = 1, #t_outputs do
+	-- debug('t_outputs', t_outputs[i])
+	-- debug('t_targets', t_targets[i])
         confusion:batchAdd(t_outputs[i], t_targets[i])
     end
     confusion:updateValids()
@@ -248,7 +250,9 @@ function test()
     -- print(confusion)
     confusion:zero()
     for i = 1, #t_outputs do
-        confusion:batchAdd(t_outputs[i], t_targets[i])
+        debug('t_outputs', t_outputs[i])
+        debug('t_targets', t_targets[i])
+	confusion:batchAdd(t_outputs[i], t_targets[i])
     end
     confusion:updateValids()
     print('> perf test : '..(confusion.totalValid * 100))
