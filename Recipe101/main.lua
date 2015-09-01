@@ -10,6 +10,7 @@ torch.setnumthreads(4)
 cuda = false
 batch = 60
 path2dir = '/Users/remicadene/data/recipe_101_tiny/'
+path2dir = '/home/cadene/data/recipe_101_tiny/'
 
 if cuda then
     print('# ... switching to CUDA')
