@@ -7,7 +7,7 @@ print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(1337)
 torch.setnumthreads(4)
 
-cuda = false
+cuda = true
 batch = 60
 nb_epoch = 30
 path2dir = '/Users/remicadene/data/recipe_101_tiny/'
@@ -16,7 +16,7 @@ path2dir = '/home/cadene/data/recipe_101_tiny/'
 if cuda then
     print('# ... switching to CUDA')
     require 'cutorch'
-    cutorch.setDevice(0)
+    cutorch.setDevice(1)
     cutorch.manualSeed(1337, 0)
     require 'cunn'
     require 'cudnn'
@@ -125,20 +125,21 @@ trainLogger = optim.Logger(paths.concat('train.log'))
 testLogger  = optim.Logger(paths.concat('test.log'))
 
 config = {
-    learningRate = 1e-2,
+    learningRate = 1e-1,
     weightDecay = 1e-3,
     momentum = 0.9,
-    learningRateDecay = 1e-7
+    learningRateDecay = 1e-4
 }
 
 function train()
-    print('\ntrain')
+    print('\n# ... training model')
+    local timer = torch.Timer()
     model:training()
     confusion:zero()
     shuffle = torch.randperm(trainset.size)
     batch_id = 1
     for i = 1, trainset.size, batch do
-        print('batch_id', batch_id)
+        print('# ... processing batch_id '..batch_id)
         if i + batch > trainset.size then
             b_size = trainset.size - i
         else
@@ -168,10 +169,13 @@ function train()
             return loss, gradParameters
         end
         optim.sgd(feval, parameters, config)
-        batch_id = batch_id + 1
+        local s = timer:time().real
+        print('... done in '..string.format("%.2d:%2d:%2d", s/(60*60), s/60%60, s%60))
+	batch_id = batch_id + 1
     end
     -- print(confusion)
     confusion:updateValids()
+    print('Perf train : '..(confusion.totalValid * 100))
     trainLogger:add{['% train perf'] = confusion.totalValid * 100}
     trainLogger:style{['% train perf'] = '-'}
     trainLogger:plot()
@@ -179,11 +183,14 @@ function train()
 end
 
 function test()
-    print('\ntest')
+    print('\n# ... Testing model')
+    local timer = torch.Timer()
     model:evaluate()
     confusion:zero()
+    local batch_id = 1
     for i = 1, testset.size, batch do
-        if i + batch > testset.size then
+        print('# ... Processing batch_id '..batch_id)
+	if i + batch > testset.size then
             b_size = testset.size - i
         else
             b_size = batch
@@ -203,15 +210,20 @@ function test()
         end
         outputs = model:forward(inputs)
         confusion:batchAdd(outputs, targets)
+        local s = timer:time().real
+        print('... done in '..string.format("%2d:%2d", s/60%60, s%60))
+        batch_id = batch_id + 1
     end
     -- print(confusion)
     confusion:updateValids()
+    print('Perf test : '..(confusion.totalValid * 100))
     testLogger:add{['% test perf'] = confusion.totalValid * 100}
     testLogger:style{['% test perf'] = '-'}
     testLogger:plot()
 end
 
 for i = 1, nb_epoch do
+    print('\n# ... Processing epoch '..i)
     train()
     test()
 end
