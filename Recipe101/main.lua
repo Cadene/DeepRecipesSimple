@@ -87,6 +87,7 @@ function load_recipe101(path2dir, pc_train)
 end
 
 trainset, testset, label2class = load_recipe101(path2dir)
+nb_class = #label2class
 
 if cuda then
     SpatialConvolution = cudnn.SpatialConvolution
@@ -120,8 +121,8 @@ model:add(nn.Dropout(0.5))
 model:add(SpatialConvolution(4096, 4096, 1, 1, 1, 1))
 model:add(nn.ReLU(true))
 model:add(nn.Dropout(0.5))
-model:add(SpatialConvolution(4096, 101, 1, 1, 1, 1))
-model:add(nn.View(101))
+model:add(SpatialConvolution(4096, nb_class, 1, 1, 1, 1))
+model:add(nn.View(nb_class))
 model:add(nn.LogSoftMax())
 if cuda then model:cuda() end
 print('# ... reshaping parameters and gradParameters')
@@ -130,7 +131,7 @@ parameters, gradParameters = model:getParameters()
 criterion = nn.ClassNLLCriterion()
 if cuda then criterion:cuda() end
 
-confusion   = optim.ConfusionMatrix(101)
+confusion   = optim.ConfusionMatrix(nb_class)
 trainLogger = optim.Logger(paths.concat('train.log'))
 testLogger  = optim.Logger(paths.concat('test.log'))
 lossLogger  = optim.Logger(paths.concat('loss.log'))
