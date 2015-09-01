@@ -25,9 +25,10 @@ if cuda then
     require 'cudnn'
 end
 
-function debug(thing)
+function debug(...)
+    local arg = {...}
     if debug then
-        print(tostring(thing), thing)
+        print('DEBUG', ...)
     end
 end
 
@@ -145,6 +146,7 @@ function train()
     print('# ---------------------- #')
     print('# ... training model ... #')
     print('# ---------------------- #')
+    collectgarbage()
     local timer = torch.Timer()
     t_outputs, t_targets = {}, {}
     model:training()
@@ -176,12 +178,15 @@ function train()
             loss    = criterion:forward(outputs, targets)
             df_do   = criterion:backward(outputs, targets)
             df_di   = model:backward(inputs, df_do)
-            table.insert(t_outputs, outputs:clone())
+            _, amax = outputs:max(2)
+            table.insert(t_outputs, amax:resizeAs(targets))
             table.insert(t_targets, targets:clone())
             print('> loss : '..loss)
             print('> learning rate : '..(config.learningRate / (1 + batch_id*config.learningRateDecay))) 
-            debug(config.learningRate)
-            debug(config.learningRateDecay)
+            debug('lr', config.learningRate)
+            debug('lrd', config.learningRateDecay)
+            debug('batch_id', batch_id)
+            debug('ope', (1 + batch_id*config.learningRateDecay))
             lossLogger:add{['loss'] = loss}
             return loss, gradParameters
         end
@@ -213,6 +218,7 @@ function test()
     print('# --------------------- #')
     print('# ... testing model ... #')
     print('# --------------------- #')
+    collectgarbage()
     local timer = torch.Timer()
     t_outputs, t_targets = {}, {}
     model:evaluate()
@@ -238,7 +244,8 @@ function test()
             targets = targets:cuda()
         end
         outputs = model:forward(inputs)
-        table.insert(t_outputs, outputs:clone())
+        _, amax = outputs:max(2)
+        table.insert(t_outputs, amax:resizeAs(targets))
         table.insert(t_targets, targets:clone())
         print('> seconds : '..timer:time().real)
         batch_id = batch_id + 1
