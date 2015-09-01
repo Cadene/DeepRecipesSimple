@@ -3,6 +3,15 @@ require 'optim'
 require 'nn'
 require 'image'
 
+cmd = torch.CmdLine()
+cmd:option('-path2save', 'rslt/', '')
+cmd:option('-lr', 1e-1, '')
+cmd:option('-lrd', 0, '')
+cmd:option('-wd', 1e-3, '')
+cmd:option('-m', 0.6, '')
+cmd:option('-lrf_conv', 10, 'lr factor')
+opt = cmd:parse(arg or {})
+
 cuda = true
 batch = 60
 nb_epoch = 60
@@ -13,7 +22,7 @@ path2dir = '/home/cadene/data/recipe_101_clean/'
 save_model = false
 pretrain_model = true
 debug_mode = false
-path2save = 'rslt/'
+path2save = opt.path2save
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
@@ -174,14 +183,13 @@ lossLogger  = optim.Logger(paths.concat(path2save, 'loss.log'))
 
 -- optimizer sgd
 config = {
-    learningRate = 1e-1,--1e-5,
-    weightDecay = 1e-3,
-    momentum = 0.6,
-    weightDecay = 0,
-    learningRateDecay = 0
+    learningRate = opt.lr,--1e-5,
+    weightDecay = opt.wd,
+    momentum = opt.m,
+    learningRateDecay = opt.lrd
 }
 print('# ... making learningRates for convolution layers')
-lr_conv = config.learningRate/10
+lr_conv = config.learningRate / opt.lrf_conv
 lrs = torch.Tensor(parameters:size(1))
 i = 0
 lrs:apply(function()
