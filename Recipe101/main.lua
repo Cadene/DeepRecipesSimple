@@ -10,7 +10,7 @@ seed = 1337
 -- path2dir = '/Users/remicadene/data/recipe_101_tiny/'
 path2dir = '/home/cadene/data/recipe_101_tiny/'
 save_model = false
-debug = true
+debug = false
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
@@ -183,11 +183,7 @@ function train()
             table.insert(t_outputs, amax:resizeAs(targets))
             table.insert(t_targets, targets:clone())
             print('> loss : '..loss)
-            print('> learning rate : '..(config.learningRate / (1 + batch_id*config.learningRateDecay))) 
-            debug('lr', config.learningRate)
-            debug('lrd', config.learningRateDecay)
-            debug('batch_id', batch_id)
-            debug('ope', (1 + batch_id*config.learningRateDecay))
+            print('> learning rate : '..(config.learningRate / (1 + nevals*config.learningRateDecay))) 
             lossLogger:add{['loss'] = loss}
             return loss, gradParameters
         end
@@ -199,8 +195,6 @@ function train()
     confusion:zero()
     for i = 1, #t_outputs do
         confusion:batchAdd(t_outputs[i], t_targets[i])
-        debug(t_outputs[i])
-        debug(t_targets[i])
     end
     confusion:updateValids()
     print('> perf train : '..(confusion.totalValid * 100))
@@ -255,8 +249,6 @@ function test()
     confusion:zero()
     for i = 1, #t_outputs do
         confusion:batchAdd(t_outputs[i], t_targets[i])
-        debug(t_outputs[i])
-        debug(t_targets[i])
     end
     confusion:updateValids()
     print('> perf test : '..(confusion.totalValid * 100))
@@ -265,10 +257,12 @@ function test()
     testLogger:plot()
 end
 
-for i = 1, nb_epoch do
+nevals = 1 -- same nevals from optim.sgd
+for epoch_id = 1, nb_epoch do
     print('\n# # # # # # # # # # # # # # # #')
-    print('   ... Processing epoch_'..i..' ...')
+    print('   ... Processing epoch_'..epoch_id..' ...')
     print('# # # # # # # # # # # # # # # #')
     train()
     test()
+    nevals = nevals + 1
 end
