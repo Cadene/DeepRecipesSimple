@@ -11,5 +11,6 @@ echo "CUDA_VISIBLE_DEVICES=$gpu th -i main.lua \
 -lrf_conv 10" > $name.sh
 chmod 777 $name.sh
 cp $name.sh $path2save/$name.sh
+cat $name.sh >> rslt/experiences.log
 nohup ./$name.sh > $path2save/run.log &
 cat $path2save/run.log
