@@ -10,6 +10,7 @@ cmd:option('-lrd', 0, '')
 cmd:option('-wd', 1e-3, '')
 cmd:option('-m', 0.6, '')
 cmd:option('-lrf_conv', 1, 'lr factor')
+cmd:option('-pretrain', 1, '{1,0}')
 opt = cmd:parse(arg or {})
 
 cuda = true
@@ -20,7 +21,11 @@ seed = 1337
 -- path2dir = '/home/cadene/data/recipe_101_tiny/'
 path2dir = '/home/cadene/data/recipe_101_clean/'
 save_model = false
-pretrain_model = true
+if opt.pretrain == 1 then
+    pretrain_model = true
+else 
+    pretrain_model = false
+end
 debug_mode = false
 path2save = opt.path2save
 
