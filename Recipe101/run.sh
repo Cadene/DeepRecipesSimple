@@ -1,14 +1,15 @@
 gpu=0
-name="overfeat_${gpu}"
+exp=5
+name="exp${exp}_overfeat_${gpu}"
 path2save="./rslt/$name"
 mkdir $path2save
 echo "CUDA_VISIBLE_DEVICES=$gpu th -i main.lua \
 -path2save $path2save \
--lr 1e-1 \
--lrd 0 \
+-lr 3e-1 \
+-lrd 5e-4 \
 -wd 1e-3 \
 -m 0.6 \
--lrf_conv 10" > $name.sh
+-lrf_conv 1" > $name.sh
 chmod 777 $name.sh
 cp $name.sh $path2save/$name.sh
 cat $name.sh >> rslt/experiences.log

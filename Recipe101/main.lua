@@ -9,7 +9,7 @@ cmd:option('-lr', 1e-1, '')
 cmd:option('-lrd', 0, '')
 cmd:option('-wd', 1e-3, '')
 cmd:option('-m', 0.6, '')
-cmd:option('-lrf_conv', 10, 'lr factor')
+cmd:option('-lrf_conv', 1, 'lr factor')
 opt = cmd:parse(arg or {})
 
 cuda = true
@@ -188,19 +188,21 @@ config = {
     momentum = opt.m,
     learningRateDecay = opt.lrd
 }
-print('# ... making learningRates for convolution layers')
-lr_conv = config.learningRate / opt.lrf_conv
-lrs = torch.Tensor(parameters:size(1))
-i = 0
-lrs:apply(function()
-    i = i + 1
-    if i <= 18916480 then
-        return lr_conv
-    else
-        return config.learningRate
-    end
-end)
-config.learningRates = lrs
+if opt.lrf_conv ~= 1 then
+    print('# ... making learningRates for convolution layers')
+    lr_conv = config.learningRate / opt.lrf_conv
+    lrs = torch.Tensor(parameters:size(1))
+    i = 0
+    lrs:apply(function()
+        i = i + 1
+        if i <= 18916480 then
+            return lr_conv
+        else
+            return config.learningRate
+        end
+    end)
+    config.learningRates = lrs
+end
 
 function train()
     print('# ---------------------- #')
