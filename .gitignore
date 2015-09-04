@@ -4,3 +4,5 @@ Recipe101/download_weights.py
 Recipe101/net_weight_1
 Recipe101/ParamBank.o
 Recipe101/libParamBank.so
+Recipe101/VGG_ILSVRC_16_layers.caffemodel
+Recipe101/VGG_ILSVRC_16_layers_deploy.prototxt
