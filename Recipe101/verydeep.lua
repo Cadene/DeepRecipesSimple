@@ -13,7 +13,7 @@ cmd:option('-m', 0.6, '')
 cmd:option('-lrf_conv', 10, 'lr factor')
 opt = cmd:parse(arg or {})
 
-cuda = false
+cuda = true
 batch = 60
 nb_epoch = 60
 seed = 1337
@@ -280,6 +280,13 @@ function test()
     testLogger:add{['% test perf'] = confusion.totalValid * 100}
     testLogger:style{['% test perf'] = '-'}
     testLogger:plot()
+end
+
+print('Memory usage')
+print('CPU', collectgarbage("count"))
+if opt.cuda then
+    local freeMemory, totalMemory = cutorch.getMemoryUsage(opt.gpuid)
+    print('GPU', freeMemory .. ' / ' .. totalMemory)
 end
 
 nevals = 1 -- same nevals from optim.sgd
