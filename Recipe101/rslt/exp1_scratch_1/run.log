@@ -23390,3 +23390,308 @@
 [0m> learning rate : 0.00099960015993603[0m	
 [0m> seconds : 1270.1518588066[0m	
 [0m# ... processing batch_404[0m	
+[0m> loss : 4.6152009963989[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1273.3125169277[0m	
+[0m# ... processing batch_405[0m	
+[0m> loss : 4.6159925460815[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1276.4754068851[0m	
+[0m# ... processing batch_406[0m	
+[0m> loss : 4.6165599822998[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1279.677670002[0m	
+[0m# ... processing batch_407[0m	
+[0m> loss : 4.6167340278625[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1282.8379209042[0m	
+[0m# ... processing batch_408[0m	
+[0m> loss : 4.6161403656006[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1285.9956488609[0m	
+[0m# ... processing batch_409[0m	
+[0m> loss : 4.6160578727722[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1289.1532018185[0m	
+[0m# ... processing batch_410[0m	
+[0m> loss : 4.6154632568359[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1292.3049519062[0m	
+[0m# ... processing batch_411[0m	
+[0m> loss : 4.6133818626404[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1295.4607930183[0m	
+[0m# ... processing batch_412[0m	
+[0m> loss : 4.6157827377319[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1298.6094608307[0m	
+[0m# ... processing batch_413[0m	
+[0m> loss : 4.6177048683167[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1301.7641158104[0m	
+[0m# ... processing batch_414[0m	
+[0m> loss : 4.6145415306091[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1304.921309948[0m	
+[0m# ... processing batch_415[0m	
+[0m> loss : 4.6139407157898[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1308.0789489746[0m	
+[0m# ... processing batch_416[0m	
+[0m> loss : 4.6145024299622[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1311.2388529778[0m	
+[0m# ... processing batch_417[0m	
+[0m> loss : 4.6137194633484[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1314.3984518051[0m	
+[0m# ... processing batch_418[0m	
+[0m> loss : 4.6145987510681[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1317.5536429882[0m	
+[0m# ... processing batch_419[0m	
+[0m> loss : 4.6144771575928[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1320.7119839191[0m	
+[0m# ... processing batch_420[0m	
+[0m> loss : 4.6151571273804[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1323.863948822[0m	
+[0m# ... processing batch_421[0m	
+[0m> loss : 4.6161022186279[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1327.0137989521[0m	
+[0m# ... processing batch_422[0m	
+[0m> loss : 4.6182451248169[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1330.1666409969[0m	
+[0m# ... processing batch_423[0m	
+[0m> loss : 4.6136555671692[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1333.3195519447[0m	
+[0m# ... processing batch_424[0m	
+[0m> loss : 4.6147184371948[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1336.4760038853[0m	
+[0m# ... processing batch_425[0m	
+[0m> loss : 4.6157393455505[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1339.6319727898[0m	
+[0m# ... processing batch_426[0m	
+[0m> loss : 4.6142258644104[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1342.7844789028[0m	
+[0m# ... processing batch_427[0m	
+[0m> loss : 4.6146335601807[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1345.9396138191[0m	
+[0m# ... processing batch_428[0m	
+[0m> loss : 4.6153554916382[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1349.0931928158[0m	
+[0m# ... processing batch_429[0m	
+[0m> loss : 4.6138987541199[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1352.2494628429[0m	
+[0m# ... processing batch_430[0m	
+[0m> loss : 4.6152086257935[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1355.4070768356[0m	
+[0m# ... processing batch_431[0m	
+[0m> loss : 4.616081237793[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1358.5645887852[0m	
+[0m# ... processing batch_432[0m	
+[0m> loss : 4.6169443130493[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1361.7222418785[0m	
+[0m# ... processing batch_433[0m	
+[0m> loss : 4.6133594512939[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1364.8828458786[0m	
+[0m# ... processing batch_434[0m	
+[0m> loss : 4.6163167953491[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1368.0385859013[0m	
+[0m# ... processing batch_435[0m	
+[0m> loss : 4.6136236190796[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1371.2022559643[0m	
+[0m# ... processing batch_436[0m	
+[0m> loss : 4.6174373626709[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1374.361866951[0m	
+[0m# ... processing batch_437[0m	
+[0m> loss : 4.6136426925659[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1377.5194528103[0m	
+[0m# ... processing batch_438[0m	
+[0m> loss : 4.6137957572937[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1380.6732449532[0m	
+[0m# ... processing batch_439[0m	
+[0m> loss : 4.6131067276001[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1383.8284490108[0m	
+[0m# ... processing batch_440[0m	
+[0m> loss : 4.6163692474365[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1386.9834568501[0m	
+[0m# ... processing batch_441[0m	
+[0m> loss : 4.6153225898743[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1390.1357579231[0m	
+[0m# ... processing batch_442[0m	
+[0m> loss : 4.6137127876282[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1393.2922868729[0m	
+[0m# ... processing batch_443[0m	
+[0m> loss : 4.6146650314331[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1396.4483618736[0m	
+[0m# ... processing batch_444[0m	
+[0m> loss : 4.6123418807983[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1399.602052927[0m	
+[0m# ... processing batch_445[0m	
+[0m> loss : 4.6151342391968[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1402.7589628696[0m	
+[0m# ... processing batch_446[0m	
+[0m> loss : 4.6126370429993[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1405.912211895[0m	
+[0m# ... processing batch_447[0m	
+[0m> loss : 4.6157884597778[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1409.0736539364[0m	
+[0m# ... processing batch_448[0m	
+[0m> loss : 4.6146187782288[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1412.2328579426[0m	
+[0m# ... processing batch_449[0m	
+[0m> loss : 4.6136808395386[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1415.3913238049[0m	
+[0m# ... processing batch_450[0m	
+[0m> loss : 4.6160740852356[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1418.5517399311[0m	
+[0m# ... processing batch_451[0m	
+[0m> loss : 4.6133608818054[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1421.7557988167[0m	
+[0m# ... processing batch_452[0m	
+[0m> loss : 4.6152114868164[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1424.9141128063[0m	
+[0m# ... processing batch_453[0m	
+[0m> loss : 4.6110339164734[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1428.0735528469[0m	
+[0m# ... processing batch_454[0m	
+[0m> loss : 4.6153082847595[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1431.2270278931[0m	
+[0m# ... processing batch_455[0m	
+[0m> loss : 4.6160154342651[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1434.3810889721[0m	
+[0m# ... processing batch_456[0m	
+[0m> loss : 4.6151437759399[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1437.5384299755[0m	
+[0m# ... processing batch_457[0m	
+[0m> loss : 4.6149568557739[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1440.691067934[0m	
+[0m# ... processing batch_458[0m	
+[0m> loss : 4.6127543449402[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1443.8415088654[0m	
+[0m# ... processing batch_459[0m	
+[0m> loss : 4.6173939704895[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1446.9942209721[0m	
+[0m# ... processing batch_460[0m	
+[0m> loss : 4.6156759262085[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1450.1523458958[0m	
+[0m# ... processing batch_461[0m	
+[0m> loss : 4.6156873703003[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1453.3108170033[0m	
+[0m# ... processing batch_462[0m	
+[0m> loss : 4.6155471801758[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1456.468971014[0m	
+[0m# ... processing batch_463[0m	
+[0m> loss : 4.6143040657043[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1459.6291007996[0m	
+[0m# ... processing batch_464[0m	
+[0m> loss : 4.6133556365967[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1462.7842268944[0m	
+[0m# ... processing batch_465[0m	
+[0m> loss : 4.6145811080933[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1465.9410068989[0m	
+[0m# ... processing batch_466[0m	
+[0m> loss : 4.6132674217224[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1469.1007769108[0m	
+[0m# ... processing batch_467[0m	
+[0m> loss : 4.6135201454163[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1472.2578668594[0m	
+[0m# ... processing batch_468[0m	
+[0m> loss : 4.6152234077454[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1475.4116508961[0m	
+[0m# ... processing batch_469[0m	
+[0m> loss : 4.6140451431274[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1478.5679419041[0m	
+[0m# ... processing batch_470[0m	
+[0m> loss : 4.6172943115234[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1481.7276148796[0m	
+[0m# ... processing batch_471[0m	
+[0m> loss : 4.61456823349[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1484.8850839138[0m	
+[0m# ... processing batch_472[0m	
+[0m> loss : 4.6162900924683[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1488.0435538292[0m	
+[0m# ... processing batch_473[0m	
+[0m> loss : 4.6168298721313[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1491.1990919113[0m	
+[0m# ... processing batch_474[0m	
+[0m> loss : 4.6177315711975[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1494.3536198139[0m	
+[0m# ... processing batch_475[0m	
+[0m> loss : 4.6143374443054[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1497.5126328468[0m	
+[0m# ... processing batch_476[0m	
+[0m> loss : 4.614438533783[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1500.6745388508[0m	
+[0m# ... processing batch_477[0m	
+[0m> loss : 4.6148700714111[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1503.832695961[0m	
+[0m# ... processing batch_478[0m	
+[0m> loss : 4.6136856079102[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1506.9919018745[0m	
+[0m# ... processing batch_479[0m	
+[0m> loss : 4.6152672767639[0m	
+[0m> learning rate : 0.00099960015993603[0m	
+[0m> seconds : 1510.1421217918[0m	
+[0m# ... processing batch_480[0m	
+Killed
