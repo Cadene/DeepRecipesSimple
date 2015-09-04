@@ -284,7 +284,7 @@ end
 
 print('Memory usage')
 print('CPU', collectgarbage("count"))
-if opt.cuda then
+if cuda then
     local freeMemory, totalMemory = cutorch.getMemoryUsage(opt.gpuid)
     print('GPU', freeMemory .. ' / ' .. totalMemory)
 end
