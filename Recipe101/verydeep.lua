@@ -116,7 +116,7 @@ else
 end
 
 print('# ... loading very deep')
-model = loadcaffe.load('VGG_ILSVRC_16_layers_deploy.prototxt', 'VGG_ILSVRC_16_layers.caffemodel', 'cudnn')
+model = loadcaffe.load('VGG_ILSVRC_16_layers_deploy.prototxt', 'VGG_ILSVRC_16_layers.caffemodel', 'nn')
 
 model:remove(33)
 model:insert(nn.Linear(25088,4096), 33)
