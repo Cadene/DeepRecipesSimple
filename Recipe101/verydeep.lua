@@ -118,11 +118,22 @@ end
 print('# ... loading very deep')
 model = loadcaffe.load('VGG_ILSVRC_16_layers_deploy.prototxt', 'VGG_ILSVRC_16_layers.caffemodel', 'cudnn')
 
+model:remove(33)
+model:insert(nn.Linear(25088,4096), 33)
+model:remove(36)
+model:insert(nn.Linear(4096,4096), 36)
+model:remove(39)
+model:insert(nn.Linear(4096,101), 39)
+model:remove(40)
+model:insert(nn.LogSoftMax(), 40)
+
 print(model)
 
 if cuda then model:cuda() end
 print('# ... reshaping parameters and gradParameters')
 parameters, gradParameters = model:getParameters()
+
+print(parameters:size())
 
 criterion = nn.ClassNLLCriterion()
 if cuda then criterion:cuda() end
