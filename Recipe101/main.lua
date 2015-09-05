@@ -5,11 +5,11 @@ require 'image'
 
 cmd = torch.CmdLine()
 cmd:option('-path2save', 'rslt/', '')
-cmd:option('-lr', 1e-1, '')
-cmd:option('-lrd', 0, '')
-cmd:option('-wd', 1e-3, '')
-cmd:option('-m', 0.6, '')
-cmd:option('-lrf_conv', 1, 'lr factor')
+cmd:option('-lr', 1e-1, 'Learning Rate')
+cmd:option('-lrd', 0, 'Learning Rate Decay')
+cmd:option('-wd', 1e-3, 'Weight Decay')
+cmd:option('-m', 0.6, 'Momentum')
+cmd:option('-lrf_conv', 1, 'lr will be devided by lrf_conv only for convolution layers')
 cmd:option('-pretrain', 1, '{1,0}')
 opt = cmd:parse(arg or {})
 
@@ -17,9 +17,7 @@ cuda = true
 batch = 60
 nb_epoch = 60
 seed = 1337
--- path2dir = '/Users/remicadene/data/recipe_101_tiny/'
--- path2dir = '/home/cadene/data/recipe_101_tiny/'
-path2dir = '/home/cadene/data/recipe_101_clean/'
+path2dir = '/home/cadene/data/recipe_101_clean/' -- images 221*221
 save_model = false
 if opt.pretrain == 1 then
     pretrain_model = true
@@ -31,13 +29,13 @@ path2save = opt.path2save
 
 print("# ... lunching using pid = "..posix.getpid("pid"))
 torch.manualSeed(seed)
-torch.setnumthreads(4)
+torch.setnumthreads(4) -- doesn't seem to affect anything...
 torch.setdefaulttensortype('torch.FloatTensor')
 
 if cuda then
     print('# ... switching to CUDA')
     require 'cutorch'
-    cutorch.setDevice(1)
+    cutorch.setDevice(1) -- use CUDA_VISIBLE_DEVICES=i th main.lua i=[0,7]
     cutorch.manualSeed(seed)
     require 'cunn'
     require 'cudnn'
@@ -53,10 +51,10 @@ end
 function load_recipe101(path2dir, pc_train)
     local path2esc = {'.', '..', '.DS_Store', '._.DS_Store'}
     local pc_train = pc_train or 0.8 
-    local path2img, label = {}, {}
-    local p2i_train, l_train = {}, {}
+    local path2img, label = {}, {} -- all images names and label=[1,101]
+    local p2i_train, l_train = {}, {} -- only train
     local p2i_test, l_test = {}, {}
-    local label2class = {}
+    local label2class = {} -- label (int) to class (string)
     local is_in = function (string, path2esc)
         for k, name in pairs(path2esc) do
             if string == name then
@@ -66,7 +64,7 @@ function load_recipe101(path2dir, pc_train)
         return false
     end
     for _, class in pairs(paths.dir(path2dir)) do
-        if not is_in(class, path2esc) then
+        if not is_in(class, path2esc) then -- rm path2esc values
             path2img[class] = {}
             for _, path_img in pairs(paths.dir(path2dir..class)) do
                 if not is_in(path_img, path2esc) then
@@ -80,7 +78,7 @@ function load_recipe101(path2dir, pc_train)
         label2class[label] = class
         local shuffle = torch.randperm(#p2i)
         local limit = #p2i * pc_train 
-        for i = 1, #p2i do
+        for i = 1, #p2i do -- same partition (pc_train) for each class
             if i < limit then
                 table.insert(p2i_train, p2i[shuffle[i]])
                 table.insert(l_train, label)
@@ -185,6 +183,7 @@ confusion   = optim.ConfusionMatrix(nb_class)
 trainLogger = optim.Logger(paths.concat(path2save, 'train.log'))
 testLogger  = optim.Logger(paths.concat(path2save, 'test.log'))
 lossLogger  = optim.Logger(paths.concat(path2save, 'loss.log'))
+lrLogger    = optim.Logger(paths.concat(path2save, 'lr.log'))
 
 -- optimizer sgd
 config = {
@@ -200,7 +199,7 @@ if opt.lrf_conv ~= 1 then
     i = 0
     lrs:apply(function()
         i = i + 1
-        if i <= 18916480 then
+        if i <= 18916480 then -- parameters before classif layers
             return lr_conv
         else
             return config.learningRate
@@ -226,7 +225,7 @@ function train()
         else
             b_size = batch
         end
-        inputs  = torch.zeros(b_size, 3, 221, 221)
+        inputs  = torch.zeros(b_size, 3, 221, 221) -- beware of the 4d tensor
         targets = torch.zeros(b_size)
         for j = 1, b_size do
             path2img   = paths.concat(path2dir,
@@ -245,11 +244,13 @@ function train()
             loss    = criterion:forward(outputs, targets)
             df_do   = criterion:backward(outputs, targets)
             df_di   = model:backward(inputs, df_do)
-            _, amax = outputs:max(2)
-            table.insert(t_outputs, amax:resizeAs(targets))
-            table.insert(t_targets, targets:clone())
-            print('> loss : '..loss)
-            print('> learning rate : '..(config.learningRate / (1 + nevals*config.learningRateDecay))) 
+            n_lr    = config.learningRate / (1 + nevals*config.learningRateDecay) -- just to track the real lr
+            _, amax = outputs:max(2) -- ouputs is a matrix of proba but
+            table.insert(t_outputs, amax:resizeAs(targets)) -- we want same shape than targets
+            table.insert(t_targets, targets:clone()) -- if not clone, pointer could be the same
+            debug('> loss : '..loss)
+            debug('> learning rate : '..n_lr) 
+            lossLogger:add{['loss'] = loss}
             lossLogger:add{['loss'] = loss}
             return loss, gradParameters
         end
@@ -261,8 +262,9 @@ function train()
     confusion:zero()
     for i = 1, #t_outputs do
         confusion:batchAdd(t_outputs[i], t_targets[i])
+        -- processing confusion matrix at the end of an epoch saves 30mn
     end
-    confusion:updateValids()
+    confusion:updateValids() -- compute totalValid if confusion not printed
     print('> perf train : '..(confusion.totalValid * 100))
     trainLogger:add{['% train perf'] = confusion.totalValid * 100}
     trainLogger:style{['% train perf'] = '-'}
@@ -325,7 +327,7 @@ function test()
     testLogger:plot()
 end
 
-nevals = 1 -- same nevals from optim.sgd
+nevals = 1 -- same nevals than inside optim.sgd
 for epoch_id = 1, nb_epoch do
     print('\n# # # # # # # # # # # # # # # #')
     print('   ... Processing epoch_'..epoch_id..' ...')
