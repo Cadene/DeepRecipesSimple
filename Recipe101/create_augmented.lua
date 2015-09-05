@@ -153,7 +153,8 @@ for i = 1, #trainset.path do
 end
 
 s = timer:time().real
-print('Train done in '..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60).." left"))
+print('Train done in '
+    ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60))
 timer:reset()
 
 for i = 1, #testset.path do
@@ -168,7 +169,8 @@ for i = 1, #testset.path do
 end
 
 s = timer:time().real
-print('Test done in '..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60).." left"))
+print('Test done in '
+    ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60))
 
 
 
