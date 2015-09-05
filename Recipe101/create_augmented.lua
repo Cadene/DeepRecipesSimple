@@ -66,7 +66,6 @@ function prepare_img(path2img, dim_in, dim_out, crop_type, flip, mean, std)
     local img_raw = image.load(path2img) -- [0,1] -> [0,255]img
     local rh = img_raw:size(2)
     local rw = img_raw:size(3)
-
     -- rescale to 3 * 256 * 256
     if rh < rw then
        rw = math.floor(rw / rh * dim)
@@ -84,7 +83,6 @@ function prepare_img(path2img, dim_in, dim_out, crop_type, flip, mean, std)
         offsety = offsety + math.floor((rh-dim)/2)
     end
     img = img_scale[{{},{offsety,offsety+dim-1},{offsetx,offsetx+dim-1}}]
-
     if crop_type then
         local w1, h1
         if crop_type == 1 then -- center
@@ -107,17 +105,14 @@ function prepare_img(path2img, dim_in, dim_out, crop_type, flip, mean, std)
         end
         img = image.crop(img, w1, h1, w1 + dim_out, h1 + dim_out)
     end
-    
     if flip == 1 then
         img = image.hflip(img)
     end
-
     -- add mean and div std
     if mean and std then 
         img:add(mean)
         img:cdiv(std)
     end
-
     return img
 end
 
@@ -137,11 +132,17 @@ os.execute('mkdir -p '..path2train)
 os.execute('mkdir -p '..path2test)
 os.execute('chmod -R 777 '..path2augm)
 
-for i = 1, #trainset.path do
+for i = 1, #label2class do
+    path2class_tr = paths.concat(path2train, label2class[i])
+    os.execute('mkdir -p '..path2class_tr)
+    os.execute('chmod 777 '..path2class_tr)
+    path2class_te = paths.concat(path2test, label2class[i])
+    os.execute('mkdir -p '..path2class_te)
+    os.execute('chmod 777 '..path2class_te)
+end
+
+for i = 1, trainset.size do
     class = label2class[trainset.label[i]]
-    path2class = paths.concat(path2train, class)
-    os.execute('mkdir -p '..path2class)
-    os.execute('chmod 777 '..path2class)
     path2img_from = paths.concat(realdir, class, trainset.path[i])
     for j = 1, 10 do
         start, _ = string.find(trainset.path[i], '.jpg')
@@ -150,6 +151,10 @@ for i = 1, #trainset.path do
         img = prepare_img(path2img_from, 256, 221, crop_type[j], flip[j])
         image.save(path2img_to, img)
     end
+    if i % 50 == 0 then
+        collectgarbage()
+        print(i..' / '..trainset.size, path2img_to)
+    end
 end
 
 s = timer:time().real
@@ -157,20 +162,22 @@ print('Train done in '
     ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60))
 timer:reset()
 
-for i = 1, #testset.path do
+for i = 1, testset.size do
     class = label2class[testset.label[i]]
-    path2class = paths.concat(path2test, class)
-    os.execute('mkdir -p '..path2class)
-    os.execute('chmod 777 '..path2class)
     path2img_from = paths.concat(realdir, class, testset.path[i])
     img = prepare_img(path2img_from, 221, 221)
-    path2img_to  = paths.concat(path2train, class, testset.path[i])
+    path2img_to  = paths.concat(path2test, class, testset.path[i])
     image.save(path2img_to, img)
+    if i % 100 == 0 then
+        collectgarbage()
+        print(i, path2img_to)
+    end
 end
 
 s = timer:time().real
 print('Test done in '
     ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60))
+
 
 
 
