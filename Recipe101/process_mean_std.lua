@@ -82,7 +82,7 @@ for _, class in pairs(paths.dir(path2train)) do
 end
 std = std:sqrt()
 s = timer_std:time().real
-print('Mean done in '
+print('Std done in '
     ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60)) 
 image.save('std_augmented.jpg', std)
 
