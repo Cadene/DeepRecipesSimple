@@ -159,7 +159,7 @@ end
 
 s = timer:time().real
 print('Train done in '
-    ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60))
+    ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60)) -- 8 hours
 timer:reset()
 
 for i = 1, testset.size do
@@ -176,7 +176,7 @@ end
 
 s = timer:time().real
 print('Test done in '
-    ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60))
+    ..string.format("%.2d:%.2d:%.2d", s/(60*60), s/60%60, s%60)) -- 1 hour
 
 
 
