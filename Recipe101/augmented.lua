@@ -74,8 +74,8 @@ function load_recipe101(path2dir)
                     table.insert(l_train, label)
                 end
             end
-            label = label + 1
             label2class[label] = class
+            label = label + 1
         end
     end
     label = 1
@@ -84,7 +84,7 @@ function load_recipe101(path2dir)
             for _, path_img in pairs(paths.dir(path2test..class)) do
                 if not is_in(path_img, path2esc) then
                     path2img = paths.concat(path2test, class, path_img)
-                    table.insert(p2i_test), path2img)
+                    table.insert(p2i_test, path2img)
                     table.insert(l_test, label)
                 end
             end
@@ -338,3 +338,4 @@ for epoch_id = 1, nb_epoch do
     test()
     nevals = nevals + 1
 end
+
